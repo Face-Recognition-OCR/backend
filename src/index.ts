@@ -2,7 +2,7 @@ import './utils/config.util';
 import { createApp } from './app';
 import { RedisClient } from './services/redis.service';
 
-const PORT = process.env.PORT || 1300;
+const PORT = process.env.PORT || 1301;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 void (async () => {

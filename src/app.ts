@@ -1,5 +1,5 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
-import path from 'path';
+// import path from 'path';
 import cors from 'cors';
 import router from './router';
 
@@ -17,8 +17,8 @@ export function createApp(): Express {
   app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
   // Serve static files from public folder
-  const publicPath = path.join(__dirname, '..', 'public');
-  app.use(express.static(publicPath));
+  // const publicPath = path.join(__dirname, '..', 'public');
+  // app.use(express.static(publicPath));
 
   // Health check endpoint
   app.get('/health', (_req: Request, res: Response) => {
@@ -29,9 +29,9 @@ export function createApp(): Express {
   app.use('/api', router);
 
   // Serve index.html for SPA routing
-  app.get('/', (_req: Request, res: Response) => {
-    res.sendFile(path.join(publicPath, 'index.html'));
-  });
+  // app.get('/', (_req: Request, res: Response) => {
+  //   res.sendFile(path.join(publicPath, 'index.html'));
+  // });
 
   // 404 handler for API routes
   app.use((_req: Request, res: Response) => {
