@@ -7,7 +7,7 @@ export type VectorSearchResult = {
   content: string;
   docId: string;
   chunkId: number;
-  distance: number;
+  score: number;
 };
 
 export class RedisClient {
@@ -65,7 +65,7 @@ export class RedisClient {
   public async addDocument(
     docId: string,
     chunkId: number,
-    content: string,
+    name: string,
     embedding: Float32Array,
     metadata: Record<string, string | number> = {}
   ) {
@@ -83,7 +83,7 @@ export class RedisClient {
     }, {});
 
     await redis.hSet(key, {
-      content,
+      content: name,
       embedding: buffer,
       ...processedMetadata,
     });
@@ -107,13 +107,15 @@ export class RedisClient {
       RETURN: ['content', 'docId', 'chunkId', 'score'],
     })) as { documents: Array<{ id: string; value: Record<string, string> }> };
 
-    return results.documents.map((d) => ({
-      id: d.id,
-      content: d.value.content ?? '',
-      docId: d.value.docId ?? '',
-      chunkId: Number(d.value.chunkId ?? 0),
-      distance: parseFloat(d.value.score ?? '0'),
-    }));
+    return results.documents.map((d) => {
+      return {
+        id: d.id,
+        content: d.value.content ?? '',
+        docId: d.value.docId ?? '',
+        chunkId: Number(d.value.chunkId ?? 0),
+        score: 1 - parseFloat(d.value.score ?? '0'),
+      };
+    });
   }
 
   private getRedisClient(): RedisVectorClient {

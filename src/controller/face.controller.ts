@@ -15,8 +15,9 @@ export class FaceController {
    */
   embedFace = async (req: Request, res: Response): Promise<void> => {
     try {
-      const { id, image_base64, metadata } = req.body as {
+      const { id, name, image_base64, metadata } = req.body as {
         id?: string;
+        name?: string;
         image_base64?: string;
         metadata?: Record<string, string | number>;
       };
@@ -33,8 +34,7 @@ export class FaceController {
 
       // Store in Redis
       const chunkId = 0;
-      const content = `Face embedding for ${id}`;
-      await this.redisClient.addDocument(id, chunkId, content, embedding, metadata || {});
+      await this.redisClient.addDocument(id, chunkId, name || '', embedding, metadata || {});
 
       res.json({
         message: 'Face embedded and stored successfully',
